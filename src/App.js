@@ -3,6 +3,7 @@ import axios from "axios";
 import "./App.css";
 
 let API_KEY = process.env.REACT_APP_LOCATION_KEY;
+console.log("🚀 ~ file: App.js:6 ~ API_KEY", API_KEY);
 
 class App extends React.Component {
   constructor(props) {
@@ -12,6 +13,8 @@ class App extends React.Component {
       cityData: {},
       error: false,
       errorMessage: "",
+      lat: "",
+      lon: "",
     };
   }
 
@@ -36,7 +39,36 @@ class App extends React.Component {
       city: event.target.value,
     });
 
-  }
+  };
+
+  searchCityAPI = async (event) => {
+    event.preventDefault();
+    try { 
+      let citySearchURL = `https://us1.locationiq.com/v1/search?key=${process.env.REACT_APP_LOCATION_KEY}&q=${this.state.city}&format=json`;
+
+      let cityData = await axios.get(citySearchURL);
+      console.log("🚀 ~ file: App.js:46 ~ App ~ searchCityAPI= ~ cityData", cityData)
+
+      this.setState({
+        error: false,
+        displayMap: true,
+        cityData: cityData.data[0],
+        lat: cityData.data[0].lat,
+        lon: cityData.data[0].lon,
+      },
+      // () => {
+      //   this.getMapData();
+      // }
+      );
+    } catch (error) {
+      this.setState({
+        displayMap: false,
+        displayError: true,
+        errorMessage: error.response.status + ': ' + error.response.data.error
+      });
+    }
+  };
+
   submitCityHandler = async (event) => {
     event.preventDefault();
 
@@ -66,10 +98,10 @@ class App extends React.Component {
     // let city = this.state.city.map((name, index) => {
     //   return <li key={index}>{city.name}</li>;
     // });
-
+console.log(this.state.lat);
     return (
       <>
-        <form onSubmit={this.submitCityHandler}>
+        <form onSubmit={this.searchCityAPI}>
           <label>
             <input 
             type="text"
@@ -79,6 +111,8 @@ class App extends React.Component {
           </label>
           <button type="submit">Explore!</button>
         </form>
+        {this.state.lat}
+        {this.state.lon}
       </>
     );
   }
