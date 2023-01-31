@@ -4,6 +4,8 @@ import "./App.css";
 
 let API_KEY = process.env.REACT_APP_LOCATION_KEY;
 console.log("🚀 ~ file: App.js:6 ~ API_KEY", API_KEY);
+let SERVER = process.env.REACT_APP_SERVER;
+console.log(SERVER);
 
 class App extends React.Component {
   constructor(props) {
@@ -65,35 +67,43 @@ class App extends React.Component {
         }
       );
     } catch (error) {
-      this.setState({
-        displayMap: false,
-        displayError: true,
-        errorMessage: error.response.status + ": " + error.response.data.error,
-      });
+      console.error(error);
     }
+    
   };
 
-  submitCityHandler = async (event) => {
-    event.preventDefault();
+getWeather = async () => {
+  let weatherRequest = `${SERVER}/weather?searchquery=${this.state.city}&lat=${this.state.lat}&lon=${this.state.lon}`
+  await axios.get(weatherRequest)
+  .then((res) => {
+    console.log(res.data)
+  })
 
-    try {
-      let url = `https://us1.locationiq.com/v1/search?key=${API_KEY}&q=${this.city.state}&format=json`;
+  console.log('yo'); 
+}
 
-      let cityInfo = await axios.get(url);
+  // submitCityHandler = async (event) => {
+  //   event.preventDefault();
 
-      this.setState({
-        cityData: cityInfo.data[0],
-        error: false,
-      });
-    } catch (error) {
-      this.setState({
-        error: true,
-        errorMessage: `An error has occurred: ${error.response.status}`,
-      });
-    }
-    console.log(this.state.lat);
-    this.getMapData();
-  };
+  //   try {
+  //     let url = `https://us1.locationiq.com/v1/search?key=${API_KEY}&q=${this.city.state}&format=json`;
+  //     console.log(this.city.state);
+
+  //     let cityInfo = await axios.get(url);
+
+  //     this.setState({
+  //       cityData: cityInfo.data[0],
+  //       error: false,
+  //     });
+  //   } catch (error) {
+  //     this.setState({
+  //       error: true,
+  //       errorMessage: `An error has occurred: ${error.response.status}`,
+  //     });
+  //   }
+  //   console.log(this.state.lat);
+  //   this.getMapData();
+  // };
 
   getMapData = async () => {
     let mapURL = `https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATION_KEY}&center=${this.state.lat},${this.state.lon}&size=${window.innerWidth}x300&format=jpg&zoom=12`;
@@ -101,13 +111,14 @@ class App extends React.Component {
     console.log("🚀 ~ file: App.js:97 ~ App ~ getMapData= ~ mapURL", mapURL);
     let mapDataResponse = await axios.get(mapURL);
     console.log(
-      "🚀 ~ file: App.js:99 ~ App ~ getMapData= ~ mapDataResponse",
       mapDataResponse
     );
 
     this.setState({
       mapData: mapDataResponse.config.url,
     });
+
+    await this.getWeather();
   };
 
   render() {
