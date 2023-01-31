@@ -15,6 +15,7 @@ class App extends React.Component {
       errorMessage: "",
       lat: "",
       lon: "",
+      mapData: "",
     };
   }
 
@@ -33,38 +34,41 @@ class App extends React.Component {
   //   }
   // };
   handleCityInput = (event) => {
-    console.log("🚀 ", event.target.value)
+    console.log("🚀 ", event.target.value);
 
     this.setState({
       city: event.target.value,
     });
-
   };
 
   searchCityAPI = async (event) => {
     event.preventDefault();
-    try { 
+    try {
       let citySearchURL = `https://us1.locationiq.com/v1/search?key=${process.env.REACT_APP_LOCATION_KEY}&q=${this.state.city}&format=json`;
 
       let cityData = await axios.get(citySearchURL);
-      console.log("🚀 ~ file: App.js:46 ~ App ~ searchCityAPI= ~ cityData", cityData)
+      console.log(
+        "🚀 ~ file: App.js:46 ~ App ~ searchCityAPI= ~ cityData",
+        cityData
+      );
 
-      this.setState({
-        error: false,
-        displayMap: true,
-        cityData: cityData.data[0],
-        lat: cityData.data[0].lat,
-        lon: cityData.data[0].lon,
-      },
-      // () => {
-      //   this.getMapData();
-      // }
+      this.setState(
+        {
+          error: false,
+          displayMap: true,
+          cityData: cityData.data[0],
+          lat: cityData.data[0].lat,
+          lon: cityData.data[0].lon,
+        },
+        () => {
+          this.getMapData();
+        }
       );
     } catch (error) {
       this.setState({
         displayMap: false,
         displayError: true,
-        errorMessage: error.response.status + ': ' + error.response.data.error
+        errorMessage: error.response.status + ": " + error.response.data.error,
       });
     }
   };
@@ -72,47 +76,67 @@ class App extends React.Component {
   submitCityHandler = async (event) => {
     event.preventDefault();
 
+    try {
+      let url = `https://us1.locationiq.com/v1/search?key=${API_KEY}&q=${this.city.state}&format=json`;
 
-  //   try {
-  //     let url = `https://us1.locationiq.com/v1/search?key=${API_KEY}&q=${this.city.state}&format=json`;
+      let cityInfo = await axios.get(url);
 
-  //     let cityInfo = await axios.get(url);
+      this.setState({
+        cityData: cityInfo.data[0],
+        error: false,
+      });
+    } catch (error) {
+      this.setState({
+        error: true,
+        errorMessage: `An error has occurred: ${error.response.status}`,
+      });
+    }
+    console.log(this.state.lat);
+    this.getMapData();
+  };
 
-  //     this.setState({
-  //       cityData: cityInfo.data[0],
-  //       error: false,
-  //     });
-  //   } catch (error) {
-  //     this.setState({
-  //       error: true,
-  //       errorMessage: `An error has occurred: ${error.response.status}`,
-  //     });
-  //   }
+  getMapData = async () => {
+    let mapURL = `https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATION_KEY}&center=${this.state.lat},${this.state.lon}&size=${window.innerWidth}x300&format=jpg&zoom=12`;
 
-  
-  // }  
-};
-  
+    console.log("🚀 ~ file: App.js:97 ~ App ~ getMapData= ~ mapURL", mapURL);
+    let mapDataResponse = await axios.get(mapURL);
+    console.log(
+      "🚀 ~ file: App.js:99 ~ App ~ getMapData= ~ mapDataResponse",
+      mapDataResponse
+    );
+
+    this.setState({
+      mapData: mapDataResponse.config.url,
+    });
+  };
 
   render() {
+    console.log(this.state.mapData);
     // let city = this.state.city.map((name, index) => {
     //   return <li key={index}>{city.name}</li>;
     // });
-console.log(this.state.lat);
+    console.log(this.state.lat);
     return (
       <>
         <form onSubmit={this.searchCityAPI}>
           <label>
-            <input 
-            type="text"
-            onInput={this.handleCityInput}
-            plcaeholder="Enter a City"
+            <input
+              type="text"
+              onInput={this.handleCityInput}
+              plcaeholder="Enter a City"
             />
           </label>
           <button type="submit">Explore!</button>
         </form>
-        {this.state.lat}
-        {this.state.lon}
+        <main>
+          {this.state.mapData && 
+            <>
+              {this.state.lat}
+              {this.state.lon}
+              <img src={this.state.mapData} alt={this.state.city} />
+            </>
+          }
+        </main>
       </>
     );
   }
