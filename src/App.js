@@ -2,10 +2,10 @@ import React from "react";
 import axios from "axios";
 import "./App.css";
 
-let API_KEY = process.env.REACT_APP_LOCATION_KEY;
-console.log("🚀 ~ file: App.js:6 ~ API_KEY", API_KEY);
+// let API_KEY = process.env.REACT_APP_LOCATION_KEY;
+// console.log("🚀 ~ file: App.js:6 ~ API_KEY", API_KEY);
 let SERVER = process.env.REACT_APP_SERVER;
-console.log(SERVER);
+// console.log(SERVER);
 
 class App extends React.Component {
   constructor(props) {
@@ -18,6 +18,7 @@ class App extends React.Component {
       lat: "",
       lon: "",
       mapData: "",
+      weatherRequest: [],
     };
   }
 
@@ -36,7 +37,7 @@ class App extends React.Component {
   //   }
   // };
   handleCityInput = (event) => {
-    console.log("🚀 ", event.target.value);
+    // console.log("🚀 ", event.target.value);
 
     this.setState({
       city: event.target.value,
@@ -69,18 +70,22 @@ class App extends React.Component {
     } catch (error) {
       console.error(error);
     }
-    
   };
 
-getWeather = async () => {
-  let weatherRequest = `${SERVER}/weather?searchquery=${this.state.city}&lat=${this.state.lat}&lon=${this.state.lon}`
-  await axios.get(weatherRequest)
-  .then((res) => {
-    console.log(res.data)
-  })
+  getWeather = async () => {
+    let weatherRequest = `${SERVER}/weather?searchquery=${this.state.city}&lat=${this.state.lat}&lon=${this.state.lon}`;
+    let forecastData = await axios.get(weatherRequest);
+    console.log(
+      "🚀 ~ file: App.js:79 ~ App ~ getWeather= ~ forecastData",
+      forecastData.data
+    );
 
-  console.log('yo'); 
-}
+    console.log("yo");
+
+    this.setState({
+      weatherRequest: forecastData.data,
+    });
+  };
 
   // submitCityHandler = async (event) => {
   //   event.preventDefault();
@@ -110,23 +115,22 @@ getWeather = async () => {
 
     console.log("🚀 ~ file: App.js:97 ~ App ~ getMapData= ~ mapURL", mapURL);
     let mapDataResponse = await axios.get(mapURL);
-    console.log(
-      mapDataResponse
-    );
+    console.log(mapDataResponse);
 
     this.setState({
       mapData: mapDataResponse.config.url,
     });
 
-    await this.getWeather();
+    this.getWeather();
   };
 
   render() {
-    console.log(this.state.mapData);
-    // let city = this.state.city.map((name, index) => {
-    //   return <li key={index}>{city.name}</li>;
-    // });
-    console.log(this.state.lat);
+    // console.log(this.state.weatherRequest);
+    let city = this.state.weatherRequest.map((forecast, index) => {
+      return <li key={index}>{forecast.weatherForecast
+      }: Date {forecast.datetime}</li>;
+    });
+    // console.log(this.state.lat);
     return (
       <>
         <form onSubmit={this.searchCityAPI}>
@@ -140,13 +144,15 @@ getWeather = async () => {
           <button type="submit">Explore!</button>
         </form>
         <main>
-          {this.state.mapData && 
+          {this.state.mapData && (
             <>
               {this.state.lat}
               {this.state.lon}
               <img src={this.state.mapData} alt={this.state.city} />
+
+              <ul>{city}</ul>
             </>
-          }
+          )}
         </main>
       </>
     );
