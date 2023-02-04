@@ -1,10 +1,13 @@
 import React from "react";
 import axios from "axios";
 import "./App.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 // let API_KEY = process.env.REACT_APP_LOCATION_KEY;
 // console.log("🚀 ~ file: App.js:6 ~ API_KEY", API_KEY);
 let SERVER = process.env.REACT_APP_SERVER;
+let MOVIE = process.env.MOVIE_API_KEY
 // console.log(SERVER);
 
 class App extends React.Component {

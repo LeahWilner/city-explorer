@@ -1,5 +1,18 @@
+main {
+  background-color: aquamarine;
+  text-align: center;
+}
+
+form {
+  background-color: rgb(90, 133, 218);
+  padding: 20px;
+}
+
+
+/* 
 .App {
   text-align: center;
+  color: rgb(255, 94, 0);
 }
 
 .App-logo {
@@ -35,4 +48,6 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */
+
+
