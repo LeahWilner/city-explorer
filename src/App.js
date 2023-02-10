@@ -105,10 +105,10 @@ getWeatherData = async (lat, lon) => {
 
   render() {
     // console.log(this.state.weatherRequest);
-    let city = this.state.weatherRequest.map((forecast, index) => {
-      return <li key={index}>{forecast.weatherForecast
-      }: Date {forecast.datetime}</li>;
-    });
+    // let city = this.state.weatherRequest.map((forecast, index) => {
+    //   return <li key={index}>{forecast.weatherForecast
+    //   }: Date {forecast.datetime}</li>;
+    // });
     // console.log(this.state.lat);
     return (
       <>
@@ -118,7 +118,7 @@ getWeatherData = async (lat, lon) => {
             <input
               type="text"
               onInput={this.handleCityInput}
-              plcaeholder="Enter a City"
+              placeholder="Enter a City"
             />
           </label>
           <button type="submit">Explore!</button>
@@ -126,11 +126,13 @@ getWeatherData = async (lat, lon) => {
         <main>
           {this.state.mapData && (
             <>
-              {this.state.lat}
-              {this.state.lon}
+            <ul>
+              <li>City: {this.state.cityData.display_name}</li>
+              <li>Latitude: {this.state.lat}</li>
+              <li>Longitude: {this.state.lon}</li>
               <img src={this.state.mapData} alt={this.state.city} />
 
-              <ul>{city}</ul>
+              </ul>
               <Weather weather={this.state.weatherRequest}/>
             </>
           )}
