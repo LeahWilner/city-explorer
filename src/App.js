@@ -38,10 +38,10 @@ class App extends React.Component {
       let citySearchURL = `https://us1.locationiq.com/v1/search?key=${process.env.REACT_APP_LOCATION_KEY}&q=${this.state.city}&format=json`;
 
       let cityData = await axios.get(citySearchURL);
-      console.log(
-        "🚀 ~ file: App.js:46 ~ App ~ searchCityAPI= ~ cityData",
-        cityData
-      );
+      // console.log(
+        // "🚀 ~ file: App.js:46 ~ App ~ searchCityAPI= ~ cityData",
+        // cityData
+      // );
 
       this.setState(
         {
@@ -54,6 +54,7 @@ class App extends React.Component {
         () => {
           this.getMapData();
         }
+        
       );
       this.getWeatherData(cityData.data[0].lat, cityData.data[0].lon);
 
@@ -63,28 +64,15 @@ class App extends React.Component {
 
   };
 
-  // getWeather = async () => {
-  //   let weatherRequest = `${SERVER}/weather?searchquery=${this.state.city}&lat=${this.state.lat}&lon=${this.state.lon}`;
-  //   let forecastData = await axios.get(weatherRequest);
-  //   console.log(
-  //     "🚀 ~ file: App.js:79 ~ App ~ getWeather= ~ forecastData",
-  //     forecastData.data
-  //   );
-
-  //   console.log("yo");
-
-  //   this.setState({
-  //     weatherRequest: forecastData.data,
-  //   });
-  // };
+  
 
  
   getMapData = async () => {
     let mapURL = `https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATION_KEY}&center=${this.state.lat},${this.state.lon}&size=${window.innerWidth}x300&format=jpg&zoom=12`;
 
-    console.log("🚀 ~ file: App.js:97 ~ App ~ getMapData= ~ mapURL", mapURL);
+    // console.log("🚀 ~ file: App.js:97 ~ App ~ getMapData= ~ mapURL", mapURL);
     let mapDataResponse = await axios.get(mapURL);
-    console.log(mapDataResponse);
+    // console.log(mapDataResponse);
 
     this.setState({
       mapData: mapDataResponse.config.url,
@@ -93,10 +81,14 @@ class App extends React.Component {
   };
 
 getWeatherData = async (lat, lon) => {
-  console.log(lat, lon);
+  // console.log('!!!!!!!!1',lat, lon);
   try{
     let serverURL = `${process.env.REACT_APP_SERVER}/newweather?lat=${lat}&lon=${lon}`;
+    
+    // console.log("🚀 ~ file: App.js:88 ~ App ~ getWeatherData= ~ serverURL", serverURL);
     let weatherResults = await axios.get(serverURL);
+    console.log("🚀 ~ file: App.js:90 ~ App ~ getWeatherData= ~ weatherResults", weatherResults);
+    
     this.setState({
       weatherRequest: weatherResults.data
     })
