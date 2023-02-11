@@ -2,7 +2,8 @@ import React from "react";
 import axios from "axios";
 import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Weather from './Weather.js'
+import Weather from './Weather.js';
+import Movies from './Movies';
 
 
 // let API_KEY = process.env.REACT_APP_LOCATION_KEY;
@@ -22,6 +23,7 @@ class App extends React.Component {
       lon: "",
       mapData: "",
       weatherRequest: [],
+      movies: [],
     };
   }
 
@@ -57,6 +59,7 @@ class App extends React.Component {
         
       );
       this.getWeatherData(cityData.data[0].lat, cityData.data[0].lon);
+      this.getMoviesData();
 
     } catch (error) {
       console.error(error);
@@ -101,6 +104,21 @@ getWeatherData = async (lat, lon) => {
   }
 };
 
+getMoviesData = async () => {
+  try{
+    let serverURL = `${process.env.REACT_APP_SERVER}/movies?searchQuery=${this.state.city}`;
+    let movieResults = await axios.get(serverURL);
+    this.setState({
+      movies: movieResults.data,
+    });
+  } catch (error) {
+    this.setState({
+      displayMap: false,
+      displayError: true,
+      errorMessage: error.response && error.reponse.status,
+    });
+  }
+};
 
 
   render() {
@@ -134,6 +152,7 @@ getWeatherData = async (lat, lon) => {
 
               </ul>
               <Weather weather={this.state.weatherRequest}/>
+              <Movies movies={this.state.movies}/>
             </>
           )}
         </main>
