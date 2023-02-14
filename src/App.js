@@ -40,6 +40,7 @@ class App extends React.Component {
       let citySearchURL = `https://us1.locationiq.com/v1/search?key=${process.env.REACT_APP_LOCATION_KEY}&q=${this.state.city}&format=json`;
 
       let cityData = await axios.get(citySearchURL);
+   
       // console.log(
         // "🚀 ~ file: App.js:46 ~ App ~ searchCityAPI= ~ cityData",
         // cityData
@@ -111,6 +112,7 @@ getMoviesData = async () => {
     this.setState({
       movies: movieResults.data,
     });
+    console.log(movieResults.data);
   } catch (error) {
     this.setState({
       displayMap: false,
@@ -119,6 +121,19 @@ getMoviesData = async () => {
     });
   }
 };
+
+// getYelpData = async () => {
+//   try {
+//     let serverURL = `${}`
+//   } catch (error) {
+    
+//   }
+//      // await axios(url, 
+//       //   method: 'get',
+//       //   {
+//       //     headers: Bearer API_KEY,
+//       //   })
+// }
 
 
   render() {
