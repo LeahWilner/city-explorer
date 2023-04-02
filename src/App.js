@@ -122,17 +122,27 @@ getMoviesData = async () => {
   }
 };
 
+
+
+
 // getYelpData = async () => {
 //   try {
-//     let serverURL = `${}`
+//     let serverURL = `${process.env.REACT_APP_SERVER}/yelp?searchQuery=${this.state.city}`;
+//     let yelpResults = await(url,
+//       method: 'GET',
+//       url: `https://api.yelp.com/v3/businesses/search?location=chciago&sort_by=best_match&limit=20`,
+//       headers: {
+//         accept: 'application/json',
+//         Authorization: 'Bearer 9DWltxA6058bnQIaZeMm3k6W1dadZ8lY8Bn6mV5DGMtQ2qDHsJzCb-5MJ0kZ14_igVGDAPLMsmrbFVxfpvWsg0p58YJT9yPAlFIgqmK67qHr9Pih0ZSKgwhrP2zcY3Yx' 
+//     });
 //   } catch (error) {
     
 //   }
-//      // await axios(url, 
-//       //   method: 'get',
-//       //   {
-//       //     headers: Bearer API_KEY,
-//       //   })
+//      await axios(url, 
+//         method: 'get',
+//         {
+//           headers: Bearer API_KEY,
+//         })
 // }
 
 
