@@ -4,6 +4,7 @@ import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Weather from './Weather.js';
 import Movies from './Movies';
+import Yelp from './Yelp'
 
 
 // let API_KEY = process.env.REACT_APP_LOCATION_KEY;
@@ -24,6 +25,7 @@ class App extends React.Component {
       mapData: "",
       weatherRequest: [],
       movies: [],
+      yelp: [],
     };
   }
 
@@ -120,30 +122,25 @@ getMoviesData = async () => {
       errorMessage: error.response && error.reponse.status,
     });
   }
+  this.getYelpData();
 };
 
 
 
 
-// getYelpData = async () => {
-//   try {
-//     let serverURL = `${process.env.REACT_APP_SERVER}/yelp?searchQuery=${this.state.city}`;
-//     let yelpResults = await(url,
-//       method: 'GET',
-//       url: `https://api.yelp.com/v3/businesses/search?location=chciago&sort_by=best_match&limit=20`,
-//       headers: {
-//         accept: 'application/json',
-//         Authorization: 'Bearer 9DWltxA6058bnQIaZeMm3k6W1dadZ8lY8Bn6mV5DGMtQ2qDHsJzCb-5MJ0kZ14_igVGDAPLMsmrbFVxfpvWsg0p58YJT9yPAlFIgqmK67qHr9Pih0ZSKgwhrP2zcY3Yx' 
-//     });
-//   } catch (error) {
+getYelpData = async () => {
+  try {
+    let serverURL = `${process.env.REACT_APP_SERVER}/yelp?searchQuery=${this.state.city}`;
+    let yelpResults = await axios.get(serverURL);
+    console.log(yelpResults);
+    this.setState({
+      yelp: yelpResults.data
+    })
+  } catch (error) {
     
-//   }
-//      await axios(url, 
-//         method: 'get',
-//         {
-//           headers: Bearer API_KEY,
-//         })
-// }
+  }
+    
+}
 
 
   render() {
@@ -178,6 +175,7 @@ getMoviesData = async () => {
               </ul>
               <Weather weather={this.state.weatherRequest}/>
               <Movies movies={this.state.movies}/>
+              <Yelp yelp={this.state.yelp}/>
             </>
           )}
         </main>
