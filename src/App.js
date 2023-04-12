@@ -4,6 +4,7 @@ import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Weather from './Weather.js';
 import Movies from './Movies';
+import Yelp from './Yelp'
 
 
 // let API_KEY = process.env.REACT_APP_LOCATION_KEY;
@@ -24,6 +25,7 @@ class App extends React.Component {
       mapData: "",
       weatherRequest: [],
       movies: [],
+      yelp: [],
     };
   }
 
@@ -40,6 +42,7 @@ class App extends React.Component {
       let citySearchURL = `https://us1.locationiq.com/v1/search?key=${process.env.REACT_APP_LOCATION_KEY}&q=${this.state.city}&format=json`;
 
       let cityData = await axios.get(citySearchURL);
+   
       // console.log(
         // "🚀 ~ file: App.js:46 ~ App ~ searchCityAPI= ~ cityData",
         // cityData
@@ -111,6 +114,7 @@ getMoviesData = async () => {
     this.setState({
       movies: movieResults.data,
     });
+    console.log(movieResults.data);
   } catch (error) {
     this.setState({
       displayMap: false,
@@ -118,7 +122,25 @@ getMoviesData = async () => {
       errorMessage: error.response && error.reponse.status,
     });
   }
+  this.getYelpData();
 };
+
+
+
+
+getYelpData = async () => {
+  try {
+    let serverURL = `${process.env.REACT_APP_SERVER}/yelp?searchQuery=${this.state.city}`;
+    let yelpResults = await axios.get(serverURL);
+    console.log(yelpResults);
+    this.setState({
+      yelp: yelpResults.data
+    })
+  } catch (error) {
+    
+  }
+    
+}
 
 
   render() {
@@ -153,6 +175,7 @@ getMoviesData = async () => {
               </ul>
               <Weather weather={this.state.weatherRequest}/>
               <Movies movies={this.state.movies}/>
+              <Yelp yelp={this.state.yelp}/>
             </>
           )}
         </main>
